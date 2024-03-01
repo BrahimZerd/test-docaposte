@@ -1,0 +1,43 @@
+form {}
+.MuiDialogContent-root{
+    overflow-y: hidden !important;
+}
+
+.button-container-modal {
+    text-align: right;
+}
+
+.text-button-add {
+    font-family: 'Montserrat','sans-serif';
+    font-weight: 600;
+    margin-left: .5em;
+    font-size: 14px;
+}
+
+.modal-title-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 30px;
+    position:'relative'
+}
+
+.MuiPaper-root {
+    overflow-y: visible !important;
+}
+
+.button-close-icon{
+    margin: 0;
+    padding:0;
+    position: absolute;
+    background-color: red;
+    bottom: 330px;
+    left: 104%;
+    width: 40px;
+    height: 40px;
+}
+
+.container-button-adduser {
+    height: 0px;
+    padding: 15px;
+}

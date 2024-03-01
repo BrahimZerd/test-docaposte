@@ -1,0 +1,40 @@
+.MuiTablePagination-spacer {
+    width: 0px;
+    display: none;
+  }
+
+  .MuiToolbar-root {
+    display: flex;
+    width: 100%;
+    margin:0px;
+    padding: 0px;
+    padding-left:10px;
+    
+  }
+
+  .MuiTablePagination-actions{
+    display: flex;
+    position: absolute;
+    right: 0;
+    gap: -2px;
+  }
+
+  .MuiTablePagination-actions > button:nth-of-type(2) {
+    flex-grow: 2;
+    margin-right: 89px;
+  }
+
+  .MuiButtonBase-root {
+    color: #00008C;
+  }
+
+  .MuiTablePagination-selectLabel{
+    font-weight: 400;
+  }
+
+  .MuiTablePagination-displayedRows{
+    font-weight: 400;
+    font-size: 14px;
+    position: absolute;
+    right: 9.5%;
+  }

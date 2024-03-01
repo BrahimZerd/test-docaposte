@@ -1,28 +1,34 @@
-import { useState, useEffect } from 'react'
 import { ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material';
 import './App.css'
 import CustomizedTables from './components/dataTable.tsx'
+import ButtonAddUser from './components/AddUser.tsx'
 function App() {
-  const [users, setUsers] = useState();
-
-  const data = async () => {
-    const promise = await fetch('http://localhost:5000/users');
-    const getUsers = await promise.json();
-    setUsers(getUsers)
-  };
+  
   const theme = createTheme({
     typography: {
       fontFamily: [
-        'Barlow, sans-serif',
+        'Barlow, sans-serif, Montserrat',
       ].join(','),
-    }
+    },
+    palette: {
+      primary: {
+        main: '#00008C',
+      },
+      secondary:{
+        main: '#0000FF'
+      },
+      error: {
+        main: '#ECECEF'
+      }
+    },
   });
 
 
 
   return (
     <ThemeProvider theme={theme} >
+      <ButtonAddUser />
       <CustomizedTables/>
     </ThemeProvider >
    
