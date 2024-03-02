@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-
+import { getUsers } from '../services/userService.ts';
+import { useQuery } from '@tanstack/react-query';
 import { DataGrid, GridColDef, GridActionsCellItem, GridRowParams} from '@mui/x-data-grid';
 import { TablePaginationProps, TablePagination } from '@mui/material';
 import Box from '@mui/material/Box';
-
+import ButtonAddUser from './AddUser.tsx'
 
 import deleteIcon from '../assets/deleteIcon.png';
-import editIcon from '../assets/editIcon.png';
 
 import './dataTable.css';
 
@@ -18,8 +18,17 @@ const columns: GridColDef[] = [
     { field: 'lastName', headerName: 'Prénom', width:380, headerClassName: 'columnTextColor' },
     { field: 'email', headerName: 'Email', width: 380, headerClassName: 'columnTextColor' },
     {field:'actions', type:'actions', width: 0, getActions: (params: GridRowParams) => [
-      <GridActionsCellItem icon={<img src={editIcon} width={20} style={{padding:'10px'}} height={20}  alt="icone modifier utilisateur" />}  onClick={() => console.log(params)} label="Editer utilisateur" />,
-      <GridActionsCellItem icon={<img src={deleteIcon}  width={20} height={20} style={{padding:'5px'}} alt="icone supprimer utilisateur" />}  label="Supprimer utilisateur" />
+      <ButtonAddUser 
+      user={false} 
+      addUserTitle={'Modifier Utilisateur'} 
+      isTrue={true} 
+      buttonAddUserText={"Modifier"}
+      email={params.row.email}
+      firstName={params.row.firstName}
+      lastName={params.row.lastName}
+      
+      />,
+      <GridActionsCellItem icon={<img src={deleteIcon}  width={20} height={20} style={{padding:'5px',marginRight:'5px'}} alt="icone supprimer utilisateur" />}  label="Supprimer utilisateur" />
 ]}
  ];
 
@@ -52,17 +61,16 @@ const customPagination = (props : TablePaginationProps ) => {
 export default function DataTable() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
-    const [users, setUsers] = useState([]);
-
-    const totalPages = Math.ceil(users.length/rowsPerPage);
+    const {data : users , error,  isLoading } = useQuery({ queryKey: ['users'], queryFn: getUsers})
 
 
-    const getUsers = async () => {
-      const promise = await fetch('http://localhost:5000/users');
-      const getUsers = await promise.json();
-      setUsers(getUsers)
-    };
+  
 
+    
+
+   
+
+     
 
     const handleChangePage = (event:any, newPage:number) => {
       setPage(newPage)
@@ -77,9 +85,13 @@ export default function DataTable() {
 
       getUsers();
     },[])
-
     
+
     return (
+      !isLoading ?
+      <div>
+      <ButtonAddUser addUserTitle={'Ajouter un utilisateur'} isTrue={true} addUser={true} buttonAddUserText={'Ajouter'}/>
+ 
         <Box
         component='div'
         sx={{
@@ -115,7 +127,7 @@ export default function DataTable() {
           }}
           slotProps={
             {
-              pagination:{component:'div', page: page ,count: totalPages,rowsPerPage: rowsPerPage, onRowsPerPageChange:changeRowsPerPage, onPageChange:handleChangePage}
+              pagination:{component:'div', page: page ,count: Math.ceil(users.length/rowsPerPage),rowsPerPage: rowsPerPage, onRowsPerPageChange:changeRowsPerPage, onPageChange:handleChangePage}
             }
           }
          style={{color:'#666D92'}}
@@ -123,6 +135,10 @@ export default function DataTable() {
           
         />}
       </Box>
+      </div>
+      :
+      <div>Loading . . .</div>
+        
     );
   }
 

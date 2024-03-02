@@ -1,4 +1,6 @@
-form {}
+.MuiInputBase-root {
+    border-radius: 8px !important;
+}
 .MuiDialogContent-root{
     overflow-y: hidden !important;
 }

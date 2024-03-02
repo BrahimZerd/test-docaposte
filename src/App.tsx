@@ -2,7 +2,16 @@ import { ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material';
 import './App.css'
 import CustomizedTables from './components/dataTable.tsx'
-import ButtonAddUser from './components/AddUser.tsx'
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
+
 function App() {
   
   const theme = createTheme({
@@ -27,10 +36,11 @@ function App() {
 
 
   return (
-    <ThemeProvider theme={theme} >
-      <ButtonAddUser />
-      <CustomizedTables/>
-    </ThemeProvider >
+    <QueryClientProvider client={queryClient} >
+      <ThemeProvider theme={theme} >
+        <CustomizedTables/>
+      </ThemeProvider >
+    </QueryClientProvider>
    
   )
 }
