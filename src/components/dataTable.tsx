@@ -1,36 +1,24 @@
 import { useEffect, useState } from 'react';
-import { getUsers } from '../services/userService.ts';
-import { useQuery } from '@tanstack/react-query';
 import { DataGrid, GridColDef, GridActionsCellItem, GridRowParams} from '@mui/x-data-grid';
 import { TablePaginationProps, TablePagination } from '@mui/material';
 import Box from '@mui/material/Box';
-import ButtonAddUser from './AddUser.tsx'
+import ButtonAddUser from './manageUser.tsx';
+
+import { useMutation } from '@tanstack/react-query';
+import { deleteUser } from '../services/userService.ts';
+
+import editIcon from '../assets/editIcon.png';
+
+import { useQuery } from '@tanstack/react-query';
+
+
+import { getUsers } from '../services/userService.ts';
 
 import deleteIcon from '../assets/deleteIcon.png';
 
 import './dataTable.css';
 
-
-
-
-const columns: GridColDef[] = [
-    { field: 'firstName', headerName: 'Nom', width: 380, headerClassName: 'columnTextColor'},
-    { field: 'lastName', headerName: 'Prénom', width:380, headerClassName: 'columnTextColor' },
-    { field: 'email', headerName: 'Email', width: 380, headerClassName: 'columnTextColor' },
-    {field:'actions', type:'actions', width: 0, getActions: (params: GridRowParams) => [
-      <ButtonAddUser 
-      user={false} 
-      addUserTitle={'Modifier Utilisateur'} 
-      isTrue={true} 
-      buttonAddUserText={"Modifier"}
-      email={params.row.email}
-      firstName={params.row.firstName}
-      lastName={params.row.lastName}
-      
-      />,
-      <GridActionsCellItem icon={<img src={deleteIcon}  width={20} height={20} style={{padding:'5px',marginRight:'5px'}} alt="icone supprimer utilisateur" />}  label="Supprimer utilisateur" />
-]}
- ];
+  
 
 
 const customPagination = (props : TablePaginationProps ) => {
@@ -61,21 +49,38 @@ const customPagination = (props : TablePaginationProps ) => {
 export default function DataTable() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
-    const {data : users , error,  isLoading } = useQuery({ queryKey: ['users'], queryFn: getUsers})
+    const {data : users ,  isLoading,  refetch } = useQuery({ queryKey: ['usersList'], queryFn: getUsers});
+    const [isChange, setChange] = useState(false);
+    const [isDelete, setDelete] = useState(false);
+    const [params, setParams] = useState<GridRowParams>()
 
 
-  
-
-    
-
+    const columns: GridColDef[] = [
+      { field: 'firstName', headerName: 'Nom', width: 380, headerClassName: 'columnTextColor'},
+      { field: 'lastName', headerName: 'Prénom', width:380, headerClassName: 'columnTextColor' },
+      { field: 'email', headerName: 'Email', width: 380, headerClassName: 'columnTextColor' },
+      {field:'actions', type:'actions', width: 0, getActions: (params: GridRowParams) => [
+        <GridActionsCellItem icon={<img src={editIcon} alt="modifier utilisateur" />} label='modifier utilisateur' onClick={() => handleChangeUser(params)}/>,
+        <GridActionsCellItem icon={<img src={deleteIcon} alt="supprimer utilisateur" />} label='supprimer utilisateur' onClick={() => handleDeleteUser(params)}/>
+    ]}
+    ];
    
-
-     
-
-    const handleChangePage = (event:any, newPage:number) => {
+     const handleChangePage = (event:any, newPage:number) => {
       setPage(newPage)
     };
 
+    const handleChangeUser = (id : GridRowParams) => {
+      setDelete(false)
+      setChange(true)
+      setParams(id)
+      refetch();
+
+    }
+    const handleDeleteUser = (id: GridRowParams) => {
+      setChange(false)
+      setDelete(true)
+      setParams(id)
+    }
 
     const changeRowsPerPage =(event:any) => {
       setRowsPerPage(parseInt(event.target.value,10));
@@ -84,14 +89,47 @@ export default function DataTable() {
     useEffect(() => {
 
       getUsers();
-    },[])
+    },[users])
     
-
     return (
       !isLoading ?
       <div>
-      <ButtonAddUser addUserTitle={'Ajouter un utilisateur'} isTrue={true} addUser={true} buttonAddUserText={'Ajouter'}/>
- 
+      
+      <ButtonAddUser manageUserTitle={'Ajouter un utilisateur'} deletingUser={false} isOpen={true} addUser={true} buttonText={'Ajouter'}/>
+      {isChange && params ?
+      <ButtonAddUser 
+      params={params}
+      addUser={false} 
+      manageUserTitle={'Modifier Utilisateur'} 
+      deletingUser={false} 
+      buttonText={"Modifier"}
+      email={params.row.email}
+      firstName={params.row.firstName}
+      lastName={params.row.lastName}
+      userId={params.row.id}
+      isOpen={true}
+     />
+         :
+         <></>
+    }
+     {isDelete && params ?
+     <ButtonAddUser 
+     addUser={false}
+     isOpen={true}
+    params={params}
+     deletingUser={true} 
+     manageUserTitle={'Supprimer utilisateur'} 
+     buttonText={"Supprimer"}
+     email={params.row.email}
+     firstName={params.row.firstName}
+     lastName={params.row.lastName}
+     userId={params.row.id}
+    />
+     :
+     <></>
+    }
+
+    
         <Box
         component='div'
         sx={{
@@ -103,7 +141,7 @@ export default function DataTable() {
           },
         }}
       >
-        {users &&
+        
         <DataGrid
         
         
@@ -133,8 +171,9 @@ export default function DataTable() {
          style={{color:'#666D92'}}
           
           
-        />}
+        />
       </Box>
+
       </div>
       :
       <div>Loading . . .</div>
@@ -142,4 +181,3 @@ export default function DataTable() {
     );
   }
 
-  

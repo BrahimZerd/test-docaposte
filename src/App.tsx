@@ -13,7 +13,7 @@ import {
 const queryClient = new QueryClient()
 
 function App() {
-  
+
   const theme = createTheme({
     typography: {
       fontFamily: [
@@ -28,7 +28,7 @@ function App() {
         main: '#0000FF'
       },
       error: {
-        main: '#ECECEF'
+        main: '#D82A2A'
       }
     },
   });

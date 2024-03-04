@@ -2,7 +2,9 @@
     width: 0px;
     display: none;
   }
-
+body {
+  position: relative !important;
+}
   .MuiToolbar-root {
     display: flex;
     width: 100%;
@@ -38,3 +40,4 @@
     position: absolute;
     right: 9.5%;
   }
+
