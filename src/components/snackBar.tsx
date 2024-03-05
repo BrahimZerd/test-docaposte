@@ -8,7 +8,6 @@ type snackBarTypes = {
     title: string
 }
 
-
 export default function CustomizedSnackbars({message, title,icon} : snackBarTypes) {
     const [open, setOpen] = React.useState(true);
   
@@ -26,13 +25,12 @@ export default function CustomizedSnackbars({message, title,icon} : snackBarType
           <Alert
             
             variant="filled"
-            sx={{ width: '100%', backgroundColor:'#FFFFFF', color: '#666D92', '& .MuiAlert-icon':{ display:'none'}}}
+            sx={{ width: '100%', boxShadow: 2,  backgroundColor:'#FFFFFF', color: '#666D92', '& .MuiAlert-icon':{ display:'none'}}}
           >
-            <div style={{display:'flex', textAlign:'left', gap:'8px'}}>
+              <div style={{display:'flex', textAlign:'left', gap:'8px'}}>
                 {icon}
-            
-             <h1 style={{color: "#00008C", fontSize:'14px', textAlign:'left'}}>{title}</h1>
-             </div>
+                <h1 style={{color: "#00008C", fontSize:'14px', textAlign:'left'}}>{title}</h1>
+              </div>
             {message}
           </Alert>
         </Snackbar>

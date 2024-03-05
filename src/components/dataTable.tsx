@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridActionsCellItem, GridRowParams} from '@mui/x-data-grid';
 import { TablePaginationProps, TablePagination } from '@mui/material';
 import Box from '@mui/material/Box';
-import ButtonAddUser from './manageUser.tsx';
 
-import { useMutation } from '@tanstack/react-query';
-import { deleteUser } from '../services/userService.ts';
+import ButtonManageUser from './manageUser.tsx';
+
+import { useGridApiRef } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
 
 import editIcon from '../assets/editIcon.png';
 
@@ -49,10 +50,19 @@ const customPagination = (props : TablePaginationProps ) => {
 export default function DataTable() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
-    const {data : users ,  isLoading,  refetch } = useQuery({ queryKey: ['usersList'], queryFn: getUsers});
+    const {data : users ,  isLoading, refetch } = useQuery({ queryKey: ['usersList'], queryFn: getUsers});
     const [isChange, setChange] = useState(false);
     const [isDelete, setDelete] = useState(false);
     const [params, setParams] = useState<GridRowParams>()
+    const [updateRows, setUpdateRows] = useState(false);
+
+
+    //Vérification si l'utilisateur est connecté sinon retour à la page d'accueil
+
+    const navigate = useNavigate();
+
+    const isConnected = localStorage.getItem('User');
+    !isConnected ? navigate('/') : null;
 
 
     const columns: GridColDef[] = [
@@ -64,6 +74,10 @@ export default function DataTable() {
         <GridActionsCellItem icon={<img src={deleteIcon} alt="supprimer utilisateur" />} label='supprimer utilisateur' onClick={() => handleDeleteUser(params)}/>
     ]}
     ];
+  
+  
+
+    const apiRef = useGridApiRef();
    
      const handleChangePage = (event:any, newPage:number) => {
       setPage(newPage)
@@ -73,7 +87,6 @@ export default function DataTable() {
       setDelete(false)
       setChange(true)
       setParams(id)
-      refetch();
 
     }
     const handleDeleteUser = (id: GridRowParams) => {
@@ -89,15 +102,31 @@ export default function DataTable() {
     useEffect(() => {
 
       getUsers();
-    },[users])
+    },[])
     
+
+    const handleUpdateRows = (value:any) => {
+      setUpdateRows(value);
+      
+        if(value) {
+          setTimeout(() => {
+          refetch();
+          users.map((user : Object) => ({ ...user}))},2000)
+        
+      }
+     
+    };
+
+  
+  
     return (
       !isLoading ?
       <div>
       
-      <ButtonAddUser manageUserTitle={'Ajouter un utilisateur'} deletingUser={false} isOpen={true} addUser={true} buttonText={'Ajouter'}/>
+      <ButtonManageUser onUpdateRows={handleUpdateRows} manageUserTitle={'Ajouter un utilisateur'}  deletingUser={false} isOpen={true} addUser={true} buttonText={'Ajouter'}  />
       {isChange && params ?
-      <ButtonAddUser 
+      <ButtonManageUser
+      onUpdateRows={handleUpdateRows}
       params={params}
       addUser={false} 
       manageUserTitle={'Modifier Utilisateur'} 
@@ -113,7 +142,9 @@ export default function DataTable() {
          <></>
     }
      {isDelete && params ?
-     <ButtonAddUser 
+
+     <ButtonManageUser 
+     onUpdateRows={handleUpdateRows}
      addUser={false}
      isOpen={true}
     params={params}
@@ -139,11 +170,18 @@ export default function DataTable() {
             color: '#00008C',
             fontSize: '15px',
           },
+          "&.MuiDataGrid-root .MuiDataGrid-cell:focus": {
+            outline: "none !important",
+         },
+         "& .MuiButtonBase-root:focus-within, & .MuiDataGrid-actionsCell:focus-within":
+         {
+           outline: "none !important",
+         },
         }}
       >
         
         <DataGrid
-        
+        apiRef={apiRef}
         
         sx={{
           '& .MuiTableFooter-root':{
@@ -181,3 +219,4 @@ export default function DataTable() {
     );
   }
 
+ 

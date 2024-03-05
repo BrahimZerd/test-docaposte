@@ -25,6 +25,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
+  background-color: #F8F8FB;
   min-width: 320px;
   min-height: 100vh;
   font-family: 'Barlow';

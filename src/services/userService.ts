@@ -6,6 +6,15 @@ import { GridRowId } from '@mui/x-data-grid';
 
 const usersUrl = 'http://localhost:5000/users';
 
+export interface User {
+    accessToken: string;
+    user: {
+      email: string;
+      password: string;
+      id:string;
+    }
+  }
+
 export const getUsers = async () => {
     
     try{
@@ -54,3 +63,18 @@ export const deleteUser = async ( id: GridRowId) => {
     }
 }
 
+
+export const getUser = async (user: User) => {
+    try {
+      const response = await axios.get(`${usersUrl}/${user.user.id}`, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`
+        }
+      });
+    console.log(response.data)
+      return response.data;
+    } catch (error) {
+      console.error('Utilisateur introuvable', error);
+      throw error;
+    }
+  };
