@@ -82,13 +82,15 @@ export default function DataTable() {
      const handleChangePage = (event:any, newPage:number) => {
       setPage(newPage)
     };
-
+    //permet de selectionner le bouton modifier
     const handleChangeUser = (id : GridRowParams) => {
       setDelete(false)
       setChange(true)
       setParams(id)
 
     }
+
+    //permet de sélectionner le bouton delete
     const handleDeleteUser = (id: GridRowParams) => {
       setChange(false)
       setDelete(true)
@@ -117,50 +119,49 @@ export default function DataTable() {
      
     };
 
-  
+  /*Affichage apres catch des users, onupdateRows permet de faire passer un état enfant/parent pour refetch dans datagrid
+    params catch les parametres au click, et addUser permet de savoir si c'est le bouton ajouter utilisateur qui est selectionné, isopen ouvre la modal */
   
     return (
+    
       !isLoading ?
       <div>
-      
-      <ButtonManageUser onUpdateRows={handleUpdateRows} manageUserTitle={'Ajouter un utilisateur'}  deletingUser={false} isOpen={true} addUser={true} buttonText={'Ajouter'}  />
-      {isChange && params ?
-      <ButtonManageUser
-      onUpdateRows={handleUpdateRows}
-      params={params}
-      addUser={false} 
-      manageUserTitle={'Modifier Utilisateur'} 
-      deletingUser={false} 
-      buttonText={"Modifier"}
-      email={params.row.email}
-      firstName={params.row.firstName}
-      lastName={params.row.lastName}
-      userId={params.row.id}
-      isOpen={true}
-     />
-         :
-         <></>
-    }
-     {isDelete && params ?
+        <ButtonManageUser onUpdateRows={handleUpdateRows} manageUserTitle={'Ajouter un utilisateur'}  deletingUser={false} isOpen={true} addUser={true} buttonText={'Ajouter'}  />
+          {isChange && params ?
+            <ButtonManageUser
+            onUpdateRows={handleUpdateRows}
+            params={params}
+            addUser={false} 
+            manageUserTitle={'Modifier Utilisateur'} 
+            deletingUser={false} 
+            buttonText={"Modifier"}
+            email={params.row.email}
+            firstName={params.row.firstName}
+            lastName={params.row.lastName}
+            userId={params.row.id}
+            isOpen={true}
+             />
+            :
+            <></>
+          }
 
-     <ButtonManageUser 
-     onUpdateRows={handleUpdateRows}
-     addUser={false}
-     isOpen={true}
-    params={params}
-     deletingUser={true} 
-     manageUserTitle={'Supprimer utilisateur'} 
-     buttonText={"Supprimer"}
-     email={params.row.email}
-     firstName={params.row.firstName}
-     lastName={params.row.lastName}
-     userId={params.row.id}
-    />
-     :
-     <></>
-    }
-
-    
+          {isDelete && params ?
+            <ButtonManageUser 
+              onUpdateRows={handleUpdateRows}
+              addUser={false}
+              isOpen={true}
+              params={params}
+              deletingUser={true} 
+              manageUserTitle={'Supprimer utilisateur'} 
+              buttonText={"Supprimer"}
+              email={params.row.email}
+              firstName={params.row.firstName}
+              lastName={params.row.lastName}
+              userId={params.row.id}
+            />
+          :
+            <></>
+          }
         <Box
         component='div'
         sx={{
@@ -178,11 +179,9 @@ export default function DataTable() {
            outline: "none !important",
          },
         }}
-      >
-        
+        >
         <DataGrid
         apiRef={apiRef}
-        
         sx={{
           '& .MuiTableFooter-root':{
             display:'flex',
@@ -195,28 +194,24 @@ export default function DataTable() {
           paginationModel={{
               page: 0,
               pageSize: rowsPerPage,
-            }}
-          
-          
+          }}
           slots={{
            pagination: customPagination,
           }}
           slotProps={
             {
-              pagination:{component:'div', page: page ,count: Math.ceil(users.length/rowsPerPage),rowsPerPage: rowsPerPage, onRowsPerPageChange:changeRowsPerPage, onPageChange:handleChangePage}
+            pagination:{component:'div', page: page ,count: Math.ceil(users.length/rowsPerPage),rowsPerPage: rowsPerPage, onRowsPerPageChange:changeRowsPerPage, onPageChange:handleChangePage}
             }
           }
-         style={{color:'#666D92'}}
-          
-          
+          style={{color:'#666D92'}}
         />
       </Box>
 
-      </div>
-      :
-      <div>Loading . . .</div>
+    </div>
+    :
+    <div>Chargement . . .</div>
         
-    );
-  }
+  );
+}
 
  
