@@ -2,22 +2,21 @@ import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridActionsCellItem, GridRowParams} from '@mui/x-data-grid';
 import { TablePaginationProps, TablePagination } from '@mui/material';
 import Box from '@mui/material/Box';
+import { useGridApiRef } from '@mui/x-data-grid';
+
 
 import ButtonManageUser from './manageUser.tsx';
 
-import { useGridApiRef } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
-
-import editIcon from '../assets/editIcon.png';
-
 import { useQuery } from '@tanstack/react-query';
-
 
 import { getUsers } from '../services/userService.ts';
 
-import deleteIcon from '../assets/deleteIcon.png';
 
 import './dataTable.css';
+import deleteIcon from '../assets/deleteIcon.png';
+import editIcon from '../assets/editIcon.png';
+
 
   
 
